@@ -1,26 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import ImageUpload from "./components/ImageUpload";
+import ThumbnailGrid from "./components/ThumbnailGrid";
+import FullScreenViewer from "./components/FullScreenViewer";
+import { getImages } from "./services/api";
 
-function App() {
+const App: React.FC = () => {
+  const [images, setImages] = useState<{ name: string; url: string }[]>([]);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const fetchImages = async () => {
+    const data = await getImages();
+    setImages(data);
+  };
+
+  useEffect(() => {
+    fetchImages();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ImageUpload onUpload={fetchImages} />
+      <ThumbnailGrid images={images} onClick={setSelectedImage} />
+      {selectedImage && (
+        <FullScreenViewer
+          imageUrl={selectedImage}
+          onClose={() => setSelectedImage(null)}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default App;
