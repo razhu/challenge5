@@ -30,6 +30,7 @@ export const getResizedImage = async (req: Request, res: Response) => {
     res.set("Content-Type", "image/jpeg");
     res.send(imageBuffer);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    const errorMessage = (error as Error).message;
+    res.status(500).json({ error: errorMessage });
   }
 };

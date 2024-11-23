@@ -3,8 +3,12 @@ import fs from "fs/promises";
 import path from "path";
 import sharp from "sharp";
 
+AWS.config.update({
+  region: process.env.AWS_REGION || "us-east-1", // Default to us-east-1 if not specified
+});
+
 const s3 = new AWS.S3();
-const bucket = process.env.BUCKET_NAME!;
+const bucket = process.env.BUCKET_NAME || "image-resizer-bucket";
 
 export const uploadToS3 = async (
   file: Express.Multer.File
